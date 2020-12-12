@@ -212,24 +212,28 @@ const lower_bound = (xs, bound, left, right) => {
   return mid;
 };
 
-const nums = input.split(`\n`).map(Number).sort((x, y) => x - y);
-
-for (let r = nums.length - 1; r >=0; --r) {
-  const max_compl = 2020 - nums[r];
-  const compl_bound = lower_bound(nums, max_compl, 0, r);
-
-  for (let compls = Object.create(null), i = 0; i < compl_bound; ++i) {
-    compls[max_compl - nums[i]] = true;
-    if (compls[nums[i]]) {
-      const a = nums[r];
-      const b = nums[i];
-      const c = max_compl - nums[i];
-      console.log(
-        `Found numbers: ${a}, ${b}, ${c}`,
-        `Sum: ${a + b + c}`,
-        `Product: ${a * b * c}`
-      );
-      process.exit(0);
+const solve = input => {
+  const nums = input.split(`\n`).map(Number).sort((x, y) => x - y);
+  
+  for (let r = nums.length - 1; r >=0; --r) {
+    const max_compl = 2020 - nums[r];
+    const compl_bound = lower_bound(nums, max_compl, 0, r);
+  
+    for (let compls = Object.create(null), i = 0; i < compl_bound; ++i) {
+      compls[max_compl - nums[i]] = true;
+      if (compls[nums[i]]) {
+        const a = nums[r];
+        const b = nums[i];
+        const c = max_compl - nums[i];
+        console.log(
+          `Found numbers: ${a}, ${b}, ${c}`,
+          `Sum: ${a + b + c}`,
+          `Product: ${a * b * c}`
+        );
+        return;
+      }
     }
   }
-}
+};
+
+solve(input);
