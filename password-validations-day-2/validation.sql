@@ -1011,7 +1011,7 @@ SELECT
     tokens[2]::int as max_occ,
     -- a[3]::char as letter,
     -- a[5] as passwd,
-    LENGTH(tokens[5]) - LENGTH(REPLACE(tokens[5], tokens[3], '')) AS frequency
+    LENGTH(tokens[5]) - LENGTH(REPLACE(tokens[5], tokens[3], '')) AS occurences
 INTO
     validation_info
 FROM
@@ -1025,6 +1025,6 @@ FROM
 SELECT
     COUNT(*) as valid_count
 FROM
-    parsed
+    validation_info
 WHERE
-    min_occ <= frequency AND frequency <= max_occ;
+    min_occ <= occurences AND occurences <= max_occ;
