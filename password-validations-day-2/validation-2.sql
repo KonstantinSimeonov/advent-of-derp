@@ -1,7 +1,6 @@
-DROP TABLE IF EXISTS password_info_strings;
+DROP TABLE IF EXISTS lines;
 
-SELECT REGEXP_SPLIT_TO_TABLE(
-    '3-4 l: vdcv
+SELECT REGEXP_SPLIT_TO_TABLE('3-4 l: vdcv
 6-9 d: dddddkzdl
 6-13 f: mfswqfrqffrvfvf
 10-12 l: sfzlnwcptlnlflq
@@ -1000,29 +999,25 @@ SELECT REGEXP_SPLIT_TO_TABLE(
 7-12 m: chmmmrmrmxmqjcpmb
 1-2 n: nntnnn
 4-12 l: lllllllllllnllll
-4-5 c: ccchc',
-    E'\n'
-) AS password_info INTO password_info_strings;
+4-5 c: ccchc', E'\n') AS line INTO lines;
 
-DROP TABLE IF EXISTS validation_info;
+DROP TABlE IF EXISTS passwd_info;
 
 SELECT
-    tokens[1]::int as min_occ,
-    tokens[2]::int as max_occ,
-    LENGTH(tokens[5]) - LENGTH(REPLACE(tokens[5], tokens[3], '')) AS occurences
+    tokens[5] AS passwd,
+    tokens[3] AS letter,
+    tokens[1]::int AS fst_index,
+    tokens[2]::int AS snd_index,
+    SUBSTRING(tokens[5], tokens[1]::int, 1) = tokens[3] as fst,
+    SUBSTRING(tokens[5], tokens[2]::int, 1) = tokens[3] as snd
 INTO
-    validation_info
+    passwd_info
 FROM
     (
         SELECT
-            REGEXP_SPLIT_TO_ARRAY(password_info, E'[- :]')
+            REGEXP_SPLIT_TO_ARRAY(line, E'[- :]')
         FROM
-            password_info_strings AS split_rows
+            lines
     ) AS DT(tokens);
 
-SELECT
-    COUNT(*) as valid_count
-FROM
-    validation_info
-WHERE
-    min_occ <= occurences AND occurences <= max_occ;
+SELECT COUNT(*) as valid_count FROM passwd_info WHERE fst <> snd;

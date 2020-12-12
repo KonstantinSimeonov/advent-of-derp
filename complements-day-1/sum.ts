@@ -199,7 +199,7 @@ const input = `1779
 1658
 1715`;
 
-const lower_bound = (xs, bound, left, right) => {
+const lower_bound = (xs: number[], bound: number, left: number, right: number): number => {
   if (left >= right)
     return left;
 
@@ -212,11 +212,11 @@ const lower_bound = (xs, bound, left, right) => {
   return mid;
 };
 
-const solve = input => {
-  const nums = input.split(`\n`).map(Number).sort((x, y) => x - y);
+const find_complementaries = (input: number[], sum: number): [[number, number, number]] | [] => {
+  const nums = [...input].sort((x, y) => x - y);
   
   for (let r = nums.length - 1; r >=0; --r) {
-    const max_compl = 2020 - nums[r];
+    const max_compl = sum - nums[r];
     const compl_bound = lower_bound(nums, max_compl, 0, r);
   
     for (let compls = Object.create(null), i = 0; i < compl_bound; ++i) {
@@ -225,15 +225,20 @@ const solve = input => {
         const a = nums[r];
         const b = nums[i];
         const c = max_compl - nums[i];
-        console.log(
-          `Found numbers: ${a}, ${b}, ${c}`,
-          `Sum: ${a + b + c}`,
-          `Product: ${a * b * c}`
-        );
-        return;
+        return [[a, b, c]];
       }
     }
   }
+
+  return [];
 };
 
-solve(input);
+const nums = input.split(`\n`).map(Number);
+find_complementaries(nums, 2020).forEach(
+  ([a, b, c]) =>
+    console.log(
+      `Found numbers: ${a}, ${b}, ${c}`,
+      `Sum: ${a + b + c}`,
+      `Product: ${a * b * c}`
+    )
+);
