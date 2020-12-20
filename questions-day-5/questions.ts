@@ -1,4 +1,4 @@
-const input = `obegcmqadtrhui
+const input1 = `obegcmqadtrhui
 qbgocuzeimrhdat
 icuagdbztxrqehoy
 cuietqhbfroagds
@@ -2175,11 +2175,45 @@ gkvc
 cvkg
 vgrckm`;
 
+const input = `abc
+
+a
+b
+c
+
+ab
+ac
+
+a
+a
+a
+a
+
+b`;
+
 const answer = input
   .split(`\n\n`)
   .reduce(
-    (sum, line) => sum + new Set(line.replace(/\s/g, '')).size,
+    (sum, group) => sum + new Set(group.replace(/\s/g, '')).size,
     0
   )
 
-console.log(answer)
+const answer2 = input1
+  .split(`\n\n`)
+  .reduce(
+    (sum, group) => {
+      const all_yes = group
+        .split(`\n`)
+        .map(gr => new Set(gr.replace(/\s/g, '')))
+        .reduce(
+          (intersection, answers) => new Set(
+            [...answers].filter(a => intersection.has(a))
+          )
+        )
+      // console.log(JSON.stringify(group), all_yes);
+      return all_yes.size + sum;
+    },
+    0
+  )
+
+console.log(answer, answer2)
