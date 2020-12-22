@@ -19,7 +19,7 @@ readInt t =
       sign = if head xs == '-' then -1 else 1
   in sign * (read $ tail xs)
 
-runInstructions :: (Int, IntSet) -> Int -> (Int, IntSet)
+runInstructions :: (Int, IntSet) -> Int -> Int
 runInstructions (acc, ran) i =
   let typeval = T.words $ instructions ! i
   in case typeval of
@@ -28,5 +28,5 @@ runInstructions (acc, ran) i =
     ["jmp", val] ->
       let nexti = i + readInt val
       in if member nexti ran
-        then (acc, ran)
+        then acc
         else runInstructions (acc, insert nexti ran) nexti
