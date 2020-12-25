@@ -18,3 +18,21 @@ calcAdapterDiff xs =
     [_]               -> 0
     [ones, threes]    -> ones * threes
     [ones, _, threes] -> ones * threes
+
+countChains adapters = roll sortedChain
+  where
+    sortedChain = (0, 0):(0, 0):(0, 1):(map (\x -> (x, 0)) $ sort $ (3 + maximum adapters):adapters)
+    roll :: [(Int, Int)] -> Int
+    roll (a:b:c:d:chain)
+      | null chain = waysToGetToD
+      | otherwise  = roll (b:c:(fst d, waysToGetToD):chain)
+      where
+        waysToGetToD = sum $ map snd $ filter (\x -> (fst d - fst x) <= 3) [a, b, c]
+
+main = do
+  let [d1, d2, ans] = map (\i -> (calcAdapterDiff i, countChains i)) [inputDemo1, inputDemo2, input]
+  putStrLn $ "             (adapter diffs, combinations)"
+  putStrLn $ "             -----------------------------"
+  putStrLn $ "Demo input 1 |" ++ (show $ d1)
+  putStrLn $ "Demo input 2 |" ++ (show $ d2)
+  putStrLn $ "Input        |" ++ (show $ ans)
